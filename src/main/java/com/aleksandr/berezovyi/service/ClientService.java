@@ -5,6 +5,7 @@ import com.aleksandr.berezovyi.model.Client;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by pepsik on 12/18/2015.
@@ -12,13 +13,17 @@ import java.util.Map;
 public interface ClientService {
     Client createClient(String firstname, String lastname);
 
+    Client updateClient(Client client);
+
     Client getClientById(Long id);
 
-    Client getClientByName(String firstname);
+    Client getClientByLastname(String lastname);
 
     double getClientBalance(Client client, List<Account> accounts);
 
     Client getClientWithMaxBalance(List<Account> accounts);
 
-    Map<Long, Client> getAllClients();
+    Client getClientWithMinBalance(List<Account> accounts);
+
+    Set<Client> getAllClients();
 }

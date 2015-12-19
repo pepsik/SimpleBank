@@ -8,4 +8,15 @@
     <artifactId>SimpleBank</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <properties>
+        <java>1.8</java>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.188</version>
+        </dependency>
+    </dependencies>
 </project>

@@ -1,48 +1,45 @@
 package com.aleksandr.berezovyi.service;
 
+import com.aleksandr.berezovyi.dao.AccountDao;
+import com.aleksandr.berezovyi.dao.h2.h2AccountDao;
 import com.aleksandr.berezovyi.model.Account;
-import com.aleksandr.berezovyi.service.Exception.InsufficientFoundsException;
+import com.aleksandr.berezovyi.exception.InsufficientFoundsException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by pepsik on 12/19/2015.
  */
 public class AccountServiceImpl implements AccountService {
-    private Long accountIdGenerator = 1000L;
-    private List<Account> accounts;
+    private AccountDao accountDao;
 
     public AccountServiceImpl() {
-        this.accounts = new ArrayList<>();
+        this.accountDao = new h2AccountDao();
     }
 
-    public Account createAccount(Integer balance) {
+    public Account createAccount(Long clientId, Integer balance) {
         Account account = new Account();
-        account.setId(accountIdGenerator++);
+        account.setOwnerId(clientId);
         account.deposit(balance);
-        accounts.add(account);
+        accountDao.create(account);
         return account;
     }
 
     @Override
     public List<Account> getAllAccounts() {
-        return accounts;
+        return accountDao.getAllAccounts();
     }
 
     @Override
     public Account getAccountById(Long id) {
-        for (Account account : accounts) {
-            if (account.getId().equals(id))
-                return account;
-        }
-        return null;
+        return accountDao.get(id);
     }
 
     @Override
     public void addMoney(Long accountId, Integer amount) {
         Account account = getAccountById(accountId);
         account.deposit(amount);
+        accountDao.update(account);
     }
 
     @Override
@@ -50,7 +47,7 @@ public class AccountServiceImpl implements AccountService {
         Account account = getAccountById(accountId);
         if (account.getBalance() < amount)
             throw new InsufficientFoundsException("Not enough money!");
-
         account.withdraw(amount);
+        accountDao.update(account);
     }
 }

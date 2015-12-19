@@ -1,4 +1,4 @@
-package com.aleksandr.berezovyi.service.Exception;
+package com.aleksandr.berezovyi.exception;
 
 /**
  * Created by pepsik on 12/19/2015.
