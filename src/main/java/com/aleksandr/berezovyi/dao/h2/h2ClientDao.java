@@ -134,7 +134,7 @@ public class h2ClientDao implements ClientDao {
     }
 
     @Override
-    public Set<Client> getAllClients() {
+    public Set<Client> getAll() {
         Statement statement = null;
         Connection connection = null;
         ResultSet resultSet;

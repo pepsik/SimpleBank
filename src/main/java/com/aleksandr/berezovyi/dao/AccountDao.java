@@ -13,7 +13,7 @@ public interface AccountDao {
 
     Account get(Long id);
 
-    Set<Account> getAllAccounts();
+    Set<Account> getAll();
 
     Account update(Account account);
 

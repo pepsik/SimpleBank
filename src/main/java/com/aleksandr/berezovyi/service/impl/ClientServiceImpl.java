@@ -8,6 +8,7 @@ import com.aleksandr.berezovyi.exception.AccountNotFoundException;
 import com.aleksandr.berezovyi.service.ClientService;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by pepsik on 12/18/2015.
@@ -53,29 +54,37 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Client getClientWithMaxBalance(List<Account> accounts) {
-        Account result = accounts.get(0);
+    public Set<Client> getClientWithMaxBalance(List<Account> accounts) {
+        List<Account> resultAccounts = new ArrayList<>();
+        resultAccounts.add(accounts.get(0));
         for (Account account : accounts) {
-            if (account.getBalance() > result.getBalance()) {
-                result = account;
-            }
+            if (account.getBalance() < resultAccounts.get(0).getBalance())
+                continue;
+            if (account.getBalance() > resultAccounts.get(0).getBalance())
+                resultAccounts.clear();
+
+            resultAccounts.add(account);
         }
-        return clientDao.getById(result.getOwnerId());
+        return resultAccounts.stream().map(account -> clientDao.getById(account.getOwnerId())).collect(Collectors.toSet());
     }
 
     @Override
-    public Client getClientWithMinBalance(List<Account> accounts) {
-        Account result = accounts.get(0);
+    public Set<Client> getClientWithMinBalance(List<Account> accounts) {
+        List<Account> resultAccounts = new ArrayList<>();
+        resultAccounts.add(accounts.get(0));
         for (Account account : accounts) {
-            if (account.getBalance() < result.getBalance()) {
-                result = account;
-            }
+            if (account.getBalance() > resultAccounts.get(0).getBalance())
+                continue;
+            if (account.getBalance() < resultAccounts.get(0).getBalance())
+                resultAccounts.clear();
+
+            resultAccounts.add(account);
         }
-        return clientDao.getById(result.getOwnerId());
+        return resultAccounts.stream().map(account -> clientDao.getById(account.getOwnerId())).collect(Collectors.toSet());
     }
 
     @Override
     public Set<Client> getAllClients() {
-        return clientDao.getAllClients();
+        return clientDao.getAll();
     }
 }

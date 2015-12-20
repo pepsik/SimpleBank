@@ -88,7 +88,7 @@ public class h2AccountDao implements AccountDao {
     }
 
     @Override
-    public Set<Account> getAllAccounts() {
+    public Set<Account> getAll() {
         Statement statement = null;
         Connection connection = null;
         Set<Account> result = new HashSet<>();
@@ -154,7 +154,7 @@ public class h2AccountDao implements AccountDao {
             recipient.deposit(payment.getAmount());
 
             try {
-                Thread.sleep(2000);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

@@ -21,9 +21,9 @@ public interface ClientService {
 
     double getClientBalance(Client client, List<Account> accounts);
 
-    Client getClientWithMaxBalance(List<Account> accounts);
+    Set<Client> getClientWithMaxBalance(List<Account> accounts);
 
-    Client getClientWithMinBalance(List<Account> accounts);
+    Set<Client> getClientWithMinBalance(List<Account> accounts);
 
     Set<Client> getAllClients();
 }

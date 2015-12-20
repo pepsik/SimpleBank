@@ -29,7 +29,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Set<Account> getAllAccounts() {
-        return accountDao.getAllAccounts();
+        return accountDao.getAll();
     }
 
     @Override
@@ -38,20 +38,20 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void addMoney(Long accountId, Double amount) {
+    public Account addMoney(Long accountId, Double amount) {
         Account account = getAccountById(accountId);
         account.deposit(amount);
-        accountDao.update(account);
+        return accountDao.update(account);
     }
 
     @Override
-    public void removeMoney(Long accountId, Double amount) {
+    public Account removeMoney(Long accountId, Double amount) {
         Account account = getAccountById(accountId);
         if (account.getBalance() < amount) {
             throw new InsufficientFundsException("Not enough money! Trying to get " + amount + " but was " + account.getBalance() + " AccountID=" + accountId);
         }
         account.withdraw(amount);
-        accountDao.update(account);
+        return accountDao.update(account);
     }
 
     @Override

@@ -15,9 +15,9 @@ public interface AccountService {
 
     Account getAccountById(Long id);
 
-    void addMoney(Long accountId, Double amount);
+    Account addMoney(Long accountId, Double amount);
 
-    void removeMoney(Long accountId, Double amount);
+    Account removeMoney(Long accountId, Double amount);
 
     Payment makePayment(Payment payment);
 

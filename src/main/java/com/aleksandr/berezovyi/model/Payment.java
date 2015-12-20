@@ -13,7 +13,7 @@ public class Payment {
     private Long id;
     private Long senderAccountId;
     private Long recipientAccountId;
-    private Double amount;
+    private volatile Double amount;
     private LocalDateTime when;
     private PaymentStatus status = PaymentStatus.NOT_COMPLETE;
 

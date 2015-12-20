@@ -74,7 +74,8 @@ public class BankMain {
             pause(100);
             System.err.println("FAILURE! " + clientLastname + "  could not add money");
             System.err.println("(cause: " + e.getMessage() + ")");
-        }finally {
+        } finally {
+            pause(50);
             System.out.println();
         }
     }
@@ -107,10 +108,11 @@ public class BankMain {
             accountService.savePayment(payment);
             System.out.println(ANSI_GREEN + "SUCCESSFUL! " + senderName + " send money to " + recipientName + ANSI_RESET);
         } catch (Exception e) {
+            pause(100);
             System.err.println("FAILURE! " + senderName + " can't send money to " + recipientName);
             System.err.println("(cause: " + e.getMessage() + ")");
         } finally {
-            pause(100);
+            pause(50);
             System.out.println();
         }
     }
@@ -164,11 +166,12 @@ public class BankMain {
     }
 
     public void showAllClientsWithAccounts() {
+        pause(100);
         List<Account> accounts = new ArrayList<>(accountService.getAllAccounts());
         Set<Client> clients = clientService.getAllClients();
         String leftAlignFormat = "| %-9d | %-8s | %-9s | %-9s | %-7d |%n";
         System.out.format("+-----------+----------+-----------+-----------+---------|%n");
-        System.out.format("| AccoundID | Balance  | Lastname  | Firstname | ownerID |%n");
+        System.out.format("| AccountID | Balance  | Lastname  | Firstname | ownerID |%n");
         System.out.format("+-----------+----------+-----------+-----------+---------|%n");
         for (Client client : clients) //bad
             for (Account account : accounts)
@@ -196,20 +199,24 @@ public class BankMain {
     public void showClientWithMaxBalance() {
         System.out.println("----------SHOW-CLIENT-WITH-MAX-BALANCE----------");
         List<Account> accounts = new ArrayList<>(accountService.getAllAccounts());
-        Client result = clientService.getClientWithMaxBalance(accounts);
-        Account account = accountService.getAccountById(result.getAccountId());
-        System.out.print(result.getFirstname() + " " + result.getLastname());
-        System.out.println(" has the highest balance=" + account.getBalance());
+        Set<Client> clients = clientService.getClientWithMaxBalance(accounts);
+        for (Client client : clients) {
+            Account account = accountService.getAccountById(client.getAccountId());
+            System.out.print(client.getFirstname() + " " + client.getLastname());
+            System.out.println(" has the highest balance=" + account.getBalance());
+        }
         System.out.println();
     }
 
     public void showClientWithMinBalance() {
         System.out.println("----------SHOW-CLIENT-WITH-MIN-BALANCE----------");
         List<Account> accounts = new ArrayList<>(accountService.getAllAccounts());
-        Client result = clientService.getClientWithMinBalance(accounts);
-        Account account = accountService.getAccountById(result.getAccountId());
-        System.out.print(result.getFirstname() + " " + result.getLastname());
-        System.out.println(" has the lowest balance=" + account.getBalance());
+        Set<Client> clients = clientService.getClientWithMinBalance(accounts);
+        for (Client client : clients) {
+            Account account = accountService.getAccountById(client.getAccountId());
+            System.out.print(client.getFirstname() + " " + client.getLastname());
+            System.out.println(" has the lowest balance=" + account.getBalance());
+        }
         System.out.println();
     }
 
@@ -253,7 +260,7 @@ public class BankMain {
         bank.getMoney("Gionne", 99.0);
         bank.showAllClientsWithAccounts();
 
-        bank.addMoney("Wong", 100500.0);
+        bank.addMoney("Wong", 3711.0);
         bank.addMoney("Wong", 0.0);
         bank.showAllClientsWithAccounts();
 

@@ -5,7 +5,7 @@ package com.aleksandr.berezovyi.model;
  */
 public class Account {
     private Long id;
-    private double balance;
+    private volatile double balance;
     private Long ownerId;
 
     public Account() {

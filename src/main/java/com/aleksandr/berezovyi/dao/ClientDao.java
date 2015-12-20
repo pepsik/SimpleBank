@@ -14,7 +14,7 @@ public interface ClientDao {
 
     Client getByLastname(String lastname);
 
-    Set<Client> getAllClients();
+    Set<Client> getAll();
 
     Client update(Client client);
 }
