@@ -1,9 +1,9 @@
 package com.aleksandr.berezovyi.dao;
 
 import com.aleksandr.berezovyi.model.Account;
+import com.aleksandr.berezovyi.model.Payment;
 
-import java.sql.ResultSet;
-import java.util.List;
+import java.util.Set;
 
 /**
  * Created by pepsik on 12/19/2015.
@@ -13,7 +13,13 @@ public interface AccountDao {
 
     Account get(Long id);
 
-    List<Account> getAllAccounts();
+    Set<Account> getAllAccounts();
 
     Account update(Account account);
+
+    Payment makePayment(Payment payment);
+
+    Payment savePayment(Payment payment);
+
+    Set<Payment> getAllPayments();
 }

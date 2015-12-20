@@ -34,21 +34,21 @@ public class h2ClientDao implements ClientDao {
 
     @Override
     public Client create(Client client) {
-        PreparedStatement ps = null;
+        PreparedStatement preparedStatement = null;
         Connection conn = null;
         try {
             conn = getConnection();
             conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-            ps = conn.prepareStatement(INSERT_SQL);
+            preparedStatement = conn.prepareStatement(INSERT_SQL);
 
-            ps.setString(1, client.getFirstname());
-            ps.setString(2, client.getLastname());
+            preparedStatement.setString(1, client.getFirstname());
+            preparedStatement.setString(2, client.getLastname());
 
-            int affectedRows = ps.executeUpdate();
+            int affectedRows = preparedStatement.executeUpdate();
             if (affectedRows == 0) {
                 throw new SQLException("Creating user failed, no rows affected.");
             }
-            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+            try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     client.setId(generatedKeys.getLong(1));
                 } else {
@@ -59,7 +59,7 @@ public class h2ClientDao implements ClientDao {
             e.printStackTrace();
         } finally {
             JdbcUtils.closeSilently(conn);
-            JdbcUtils.closeSilently(ps);
+            JdbcUtils.closeSilently(preparedStatement);
         }
         return client;
     }
@@ -68,20 +68,19 @@ public class h2ClientDao implements ClientDao {
     public Client getById(Long sentId) {
         PreparedStatement preparedStatement = null;
         Connection conn = null;
-        ResultSet rs;
         Client client = new Client();
         try {
             conn = getConnection();
             conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
             preparedStatement = conn.prepareStatement(SELECT_BY_ID_SQL);
             preparedStatement.setLong(1, sentId);
-            rs = preparedStatement.executeQuery();
+            ResultSet resultSet = preparedStatement.executeQuery();
 
-            while (rs.next()) {
-                Long id = rs.getLong("id");
-                String firstname = rs.getString("firstname");
-                String lastname = rs.getString("lastname");
-                Long accountId = rs.getLong("accountid");
+            while (resultSet.next()) {
+                Long id = resultSet.getLong("id");
+                String firstname = resultSet.getString("firstname");
+                String lastname = resultSet.getString("lastname");
+                Long accountId = resultSet.getLong("accountid");
                 client.setId(id);
                 client.setFirstname(firstname);
                 client.setLastname(lastname);
@@ -101,20 +100,19 @@ public class h2ClientDao implements ClientDao {
     public Client getByLastname(String sentLastname) {
         PreparedStatement preparedStatement = null;
         Connection conn = null;
-        ResultSet rs;
         Set<Client> clients = new HashSet<>();
         try {
             conn = getConnection();
             conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
             preparedStatement = conn.prepareStatement(SELECT_BY_LASTNAME_SQL);
             preparedStatement.setString(1, sentLastname);
-            rs = preparedStatement.executeQuery();
+            ResultSet resultSet = preparedStatement.executeQuery();
 
-            while (rs.next()) {
-                Long id = rs.getLong("id");
-                String firstname = rs.getString("firstname");
-                String lastname = rs.getString("lastname");
-                Long accountId = rs.getLong("accountid");
+            while (resultSet.next()) {
+                Long id = resultSet.getLong("id");
+                String firstname = resultSet.getString("firstname");
+                String lastname = resultSet.getString("lastname");
+                Long accountId = resultSet.getLong("accountid");
                 Client client = new Client();
                 client.setId(id);
                 client.setFirstname(firstname);
@@ -138,19 +136,19 @@ public class h2ClientDao implements ClientDao {
     @Override
     public Set<Client> getAllClients() {
         Statement statement = null;
-        Connection conn = null;
-        ResultSet rs;
+        Connection connection = null;
+        ResultSet resultSet;
         Set<Client> result = new HashSet<>();
         try {
-            conn = getConnection();
-            conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-            statement = conn.createStatement();
-            rs = statement.executeQuery(SELECT_ALL_SQL);
+            connection = getConnection();
+            connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(SELECT_ALL_SQL);
 
-            while (rs.next()) {
-                Long id = rs.getLong("id");
-                String firstname = rs.getString("firstname");
-                String lastname = rs.getString("lastname");
+            while (resultSet.next()) {
+                Long id = resultSet.getLong("id");
+                String firstname = resultSet.getString("firstname");
+                String lastname = resultSet.getString("lastname");
                 Client client = new Client();
                 client.setId(id);
                 client.setFirstname(firstname);
@@ -160,7 +158,7 @@ public class h2ClientDao implements ClientDao {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            JdbcUtils.closeSilently(conn);
+            JdbcUtils.closeSilently(connection);
             JdbcUtils.closeSilently(statement);
         }
         return result;
@@ -169,20 +167,31 @@ public class h2ClientDao implements ClientDao {
     @Override
     public Client update(Client client) {
         Connection conn = null;
+        NamedParameterStatement namedParameterStatement = null;
         try {
             conn = getConnection();
             conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-            NamedParameterStatement p = new NamedParameterStatement(conn, UPDATE_SQL);
-            p.setLong("id", client.getId());
-            p.setString("firstname", client.getFirstname());
-            p.setString("lastname", client.getLastname());
-            p.setLong("accountid", client.getAccountId());
-            p.executeUpdate();
+            namedParameterStatement = new NamedParameterStatement(conn, UPDATE_SQL);
+            namedParameterStatement.setLong("id", client.getId());
+            namedParameterStatement.setString("firstname", client.getFirstname());
+            namedParameterStatement.setString("lastname", client.getLastname());
+            namedParameterStatement.setLong("accountid", client.getAccountId());
+            namedParameterStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             JdbcUtils.closeSilently(conn);
+            closeSilently(namedParameterStatement);
         }
         return client;
+    }
+
+    private void closeSilently(NamedParameterStatement namedParameterStatement) {
+        if (namedParameterStatement != null)
+            try {
+                namedParameterStatement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
     }
 }

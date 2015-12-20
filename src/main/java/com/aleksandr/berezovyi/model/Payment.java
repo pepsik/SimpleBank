@@ -1,16 +1,21 @@
 package com.aleksandr.berezovyi.model;
 
+import com.aleksandr.berezovyi.model.util.PaymentStatus;
+
 import java.time.LocalDateTime;
 
 /**
  * Created by pepsik on 12/18/2015.
  */
+
+
 public class Payment {
     private Long id;
     private Long senderAccountId;
     private Long recipientAccountId;
-    private Integer amount;
+    private Double amount;
     private LocalDateTime when;
+    private PaymentStatus status = PaymentStatus.NOT_COMPLETE;
 
     public Long getId() {
         return id;
@@ -36,11 +41,11 @@ public class Payment {
         this.recipientAccountId = recipientAccountId;
     }
 
-    public Integer getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(Integer amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 
@@ -50,6 +55,14 @@ public class Payment {
 
     public void setWhen(LocalDateTime when) {
         this.when = when;
+    }
+
+    public PaymentStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(PaymentStatus status) {
+        this.status = status;
     }
 
     @Override

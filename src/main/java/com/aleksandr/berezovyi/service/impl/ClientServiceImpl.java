@@ -1,10 +1,11 @@
-package com.aleksandr.berezovyi.service;
+package com.aleksandr.berezovyi.service.impl;
 
 import com.aleksandr.berezovyi.dao.ClientDao;
 import com.aleksandr.berezovyi.dao.h2.h2ClientDao;
 import com.aleksandr.berezovyi.model.Account;
 import com.aleksandr.berezovyi.model.Client;
 import com.aleksandr.berezovyi.exception.AccountNotFoundException;
+import com.aleksandr.berezovyi.service.ClientService;
 
 import java.util.*;
 
@@ -52,7 +53,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Client getClientWithMaxBalance(List<Account> accounts) { //TODO: if more than 1 have equal max balance
+    public Client getClientWithMaxBalance(List<Account> accounts) {
         Account result = accounts.get(0);
         for (Account account : accounts) {
             if (account.getBalance() > result.getBalance()) {

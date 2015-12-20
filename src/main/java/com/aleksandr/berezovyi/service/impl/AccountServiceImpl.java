@@ -1,11 +1,13 @@
-package com.aleksandr.berezovyi.service;
+package com.aleksandr.berezovyi.service.impl;
 
 import com.aleksandr.berezovyi.dao.AccountDao;
 import com.aleksandr.berezovyi.dao.h2.h2AccountDao;
+import com.aleksandr.berezovyi.exception.InsufficientFundsException;
 import com.aleksandr.berezovyi.model.Account;
-import com.aleksandr.berezovyi.exception.InsufficientFoundsException;
+import com.aleksandr.berezovyi.model.Payment;
+import com.aleksandr.berezovyi.service.AccountService;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * Created by pepsik on 12/19/2015.
@@ -26,7 +28,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<Account> getAllAccounts() {
+    public Set<Account> getAllAccounts() {
         return accountDao.getAllAccounts();
     }
 
@@ -36,18 +38,34 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void addMoney(Long accountId, Integer amount) {
+    public void addMoney(Long accountId, Double amount) {
         Account account = getAccountById(accountId);
         account.deposit(amount);
         accountDao.update(account);
     }
 
     @Override
-    public void removeMoney(Long accountId, Integer amount) {
+    public void removeMoney(Long accountId, Double amount) {
         Account account = getAccountById(accountId);
-        if (account.getBalance() < amount)
-            throw new InsufficientFoundsException("Not enough money!");
+        if (account.getBalance() < amount) {
+            throw new InsufficientFundsException("Not enough money! Trying to get " + amount + " but was " + account.getBalance() + " AccountID=" + accountId);
+        }
         account.withdraw(amount);
         accountDao.update(account);
+    }
+
+    @Override
+    public Payment makePayment(Payment payment) {
+        return accountDao.makePayment(payment);
+    }
+
+    @Override
+    public Payment savePayment(Payment payment) {
+        return accountDao.savePayment(payment);
+    }
+
+    @Override
+    public Set<Payment> getAllPayments() {
+        return accountDao.getAllPayments();
     }
 }
