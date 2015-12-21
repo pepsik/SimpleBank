@@ -1,6 +1,6 @@
 package com.aleksandr.berezovyi;
 
-import com.aleksandr.berezovyi.exception.InsufficientFundsException;
+import com.aleksandr.berezovyi.exceptions.InsufficientFundsException;
 import com.aleksandr.berezovyi.model.Account;
 import com.aleksandr.berezovyi.model.Client;
 import com.aleksandr.berezovyi.model.Payment;
@@ -8,7 +8,7 @@ import com.aleksandr.berezovyi.service.AccountService;
 import com.aleksandr.berezovyi.service.impl.AccountServiceImpl;
 import com.aleksandr.berezovyi.service.ClientService;
 import com.aleksandr.berezovyi.service.impl.ClientServiceImpl;
-import com.aleksandr.berezovyi.exception.ClientNotFoundException;
+import com.aleksandr.berezovyi.exceptions.ClientNotFoundException;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -69,7 +69,7 @@ public class BankMain {
             System.out.println(clientLastname + " is trying to deposit " + amount);
             validationAmount(amount);
             accountService.addMoney(client.getAccountId(), amount);
-            System.out.println(ANSI_GREEN + "SUCCESSFUL! " + clientLastname + " put the money" + ANSI_RESET);
+            System.out.println(ANSI_GREEN + "SUCCESSFULLY! " + clientLastname + " put the money" + ANSI_RESET);
         } catch (Exception e) {
             pause(100);
             System.err.println("FAILURE! " + clientLastname + "  could not add money");
@@ -87,7 +87,7 @@ public class BankMain {
             Client client = checkClientByLastname(clientLastname);
             System.out.println(clientLastname + " is trying to withdraw " + amount);
             accountService.removeMoney(client.getAccountId(), amount);
-            System.out.println(ANSI_GREEN + "SUCCESSFUL! " + clientLastname + " got the money" + ANSI_RESET);
+            System.out.println(ANSI_GREEN + "SUCCESSFULLY! " + clientLastname + " got the money" + ANSI_RESET);
         } catch (Exception e) {
             pause(100);
             System.err.println("FAILURE! " + clientLastname + " did not received the money");
@@ -106,7 +106,7 @@ public class BankMain {
             payment.setWhen(LocalDateTime.now());
             accountService.makePayment(payment);
             accountService.savePayment(payment);
-            System.out.println(ANSI_GREEN + "SUCCESSFUL! " + senderName + " send money to " + recipientName + ANSI_RESET);
+            System.out.println(ANSI_GREEN + "SUCCESSFULLY! " + senderName + " send money to " + recipientName + ANSI_RESET);
         } catch (Exception e) {
             pause(100);
             System.err.println("FAILURE! " + senderName + " can't send money to " + recipientName);

@@ -2,7 +2,7 @@ package com.aleksandr.berezovyi.service.impl;
 
 import com.aleksandr.berezovyi.dao.AccountDao;
 import com.aleksandr.berezovyi.dao.h2.h2AccountDao;
-import com.aleksandr.berezovyi.exception.InsufficientFundsException;
+import com.aleksandr.berezovyi.exceptions.InsufficientFundsException;
 import com.aleksandr.berezovyi.model.Account;
 import com.aleksandr.berezovyi.model.Payment;
 import com.aleksandr.berezovyi.service.AccountService;

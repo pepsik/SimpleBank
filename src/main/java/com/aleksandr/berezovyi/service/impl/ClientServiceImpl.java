@@ -4,7 +4,7 @@ import com.aleksandr.berezovyi.dao.ClientDao;
 import com.aleksandr.berezovyi.dao.h2.h2ClientDao;
 import com.aleksandr.berezovyi.model.Account;
 import com.aleksandr.berezovyi.model.Client;
-import com.aleksandr.berezovyi.exception.AccountNotFoundException;
+import com.aleksandr.berezovyi.exceptions.AccountNotFoundException;
 import com.aleksandr.berezovyi.service.ClientService;
 
 import java.util.*;

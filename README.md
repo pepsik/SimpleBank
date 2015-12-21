@@ -22,4 +22,4 @@
 
 #Использование
 
-        https://github.com/pepsik/SimpleBank.git
+        git clone https://github.com/pepsik/SimpleBank.git

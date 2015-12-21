@@ -1,4 +1,4 @@
-package com.aleksandr.berezovyi.exception;
+package com.aleksandr.berezovyi.exceptions;
 
 /**
  * Created by pepsik on 12/19/2015.
