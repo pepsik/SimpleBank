@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="js/app.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/app.css">
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+<div style="width: 100%;
+  text-align: center;">
+    <div id="clients_table" style="display: inline-block;"></div>
+</div>
+<br>
+<div class="box">
+    Create new client
+    <form id="form">
+        Firstname:<br>
+        <input type="text" name="firstname">
+        <br>
+        Lastname:<br>
+        <input type="text" name="lastname">
+        <br>
+        <br>
+        <input id="submit" type="button" name="submit" value="Create" onclick="submitform()">
+    </form>
+</div>
+<div class="box">
+    Find a client
+    <form>
+        Firstname:
+        <input type="text" name="firstname">
+        Lastname:
+        <input type="text" name="lastname">
+        <br>
+        <br>
+        <input id="find" type="button" name="submit" value="Find" onclick="">
+    </form>
+</div>
+<div class="box">
+    Find clients with max balance
+    <input id="max" type="button" name="submit" value="Find" onclick="">
+    <br>
+    <br>
+    Find clients with min balance
+    <input id="min" type="button" name="submit" value="Find" onclick="">
+    <br>
+    <br>
+    Show all clients
+    <br>
+    <input id="all" type="button" name="submit" value="Show" onclick="">
+</div>
+<div class="box">
+    Transfer money
+    <form>
+        Sender:
+        <input type="text" name="lastname">
+        Amount:
+        <input type="number" name="amount">
+        Recipient:
+        <input type="text" name="lastname">
+        <br>
+        <br>
+        <input id="send" type="button" name="submit" value="Send" onclick="">
+    </form>
+</div>
+<div class="box">
+    Deposit money
+    <form>
+        Lastname:
+        <input type="text" name="lastname">
+        Amount:
+        <input type="number" name="amount">
+        <br>
+        <br>
+        <input id="deposite" type="button" name="submit" value="Deposite" onclick="">
+    </form>
+</div>
+<div class="box">
+    Withdraw money
+    <form>
+        Lastname:
+        <input type="text" name="lastname">
+        Amount:
+        <input type="number" name="amount">
+        <br>
+        <br>
+        <input id="withdraw" type="button" name="submit" value="Withdraw" onclick="">
+    </form>
+</div>
+</body>
+</html>
