@@ -1,7 +1,12 @@
 package com.aleksandr.berezovyi.mvc;
 
+import com.aleksandr.berezovyi.model.Account;
 import com.aleksandr.berezovyi.model.Client;
 import com.aleksandr.berezovyi.model.Payment;
+import com.aleksandr.berezovyi.mvc.exception.AccountDoesNotExistException;
+import com.aleksandr.berezovyi.mvc.exception.ClientDoesNotExistException;
+import com.aleksandr.berezovyi.mvc.exception.ClientExistException;
+import com.aleksandr.berezovyi.service.AccountService;
 import com.aleksandr.berezovyi.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -57,7 +62,30 @@ public class ClientController {
             client = clientService.createClient(sentClient);
             return new ResponseEntity<>(client, HttpStatus.CREATED);
         } else
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            throw new ClientExistException();
+    }
+
+    @RequestMapping(value = "/account", method = RequestMethod.POST)
+    public ResponseEntity<Account> createNewAccount(@RequestBody Client sentClient) {
+        Client client = clientService.getClientByFullname(sentClient.getFirstname(), sentClient.getLastname());
+        if (client == null)
+            throw new ClientDoesNotExistException();
+        Account account = clientService.createNewAccount(client);
+        return new ResponseEntity<>(account, HttpStatus.CREATED);
+    }
+
+    @RequestMapping(value = "/accounts", method = RequestMethod.GET)
+    public ResponseEntity<List<Account>> findAccounts(@RequestParam(required = false) String firstname, @RequestParam(required = false) String lastname) {
+        List<Account> accounts;
+        if (lastname != null && firstname != null) {
+            Client client = clientService.getClientByFullname(firstname, lastname);
+            if (client == null)
+                throw new ClientDoesNotExistException();
+            accounts = client.getAccounts();
+        } else {
+            accounts = clientService.getAllAccounts();
+        }
+        return new ResponseEntity<>(accounts, HttpStatus.FOUND);
     }
 
     @RequestMapping(value = "/max", method = RequestMethod.GET)
@@ -72,19 +100,35 @@ public class ClientController {
         return new ResponseEntity<>(clients, HttpStatus.FOUND);
     }
 
-    @RequestMapping(value = "/{accountId}/deposite", method = RequestMethod.POST)
-    public ResponseEntity<String> addMoney(@RequestBody Client sentClient, @PathVariable Long accountId, @RequestParam Double amount) {
+    //must be https
+    @RequestMapping(value = "/deposit", method = RequestMethod.POST)
+    public ResponseEntity<Account> deposit(@RequestBody Client sentClient, @RequestParam Long accountId, @RequestParam Double amount) {
         Client client = clientService.getClientByFullname(sentClient.getFirstname(), sentClient.getLastname());
         if (client == null)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
-        System.out.println(accountId);
-        System.out.println(amount);
-        return new ResponseEntity<>("norm", HttpStatus.OK);
+            throw new ClientDoesNotExistException();
+        Account account = clientService.deposit(client, accountId, amount);
+        if (account == null)
+            throw new AccountDoesNotExistException();
+        return new ResponseEntity<>(account, HttpStatus.OK);
     }
 
-    public ResponseEntity<Payment> createPayment(@RequestBody Payment payment) {
+    @RequestMapping(value = "/withdraw", method = RequestMethod.POST)
+    public ResponseEntity<Account> withdraw(@RequestBody Client sentClient, @RequestParam Long accountId, @RequestParam Double amount) {
+        Client client = clientService.getClientByFullname(sentClient.getFirstname(), sentClient.getLastname());
+        if (client == null)
+            throw new ClientDoesNotExistException();
+        Account account = clientService.withdraw(client, accountId, amount);
+        if (account == null)
+            throw new AccountDoesNotExistException();
+        return new ResponseEntity<>(account, HttpStatus.OK);
+    }
 
+    @RequestMapping(value = "/payment", method = RequestMethod.POST)
+    public ResponseEntity<Payment> createPayment(@RequestBody Payment sentPayment) {
+        System.out.println(sentPayment);
+        if (sentPayment.getRecipientAccountId() == null || sentPayment.getSenderAccountId() == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        Payment payment = clientService.createPayment(sentPayment);
         return new ResponseEntity<>(payment, HttpStatus.OK);
     }
 }

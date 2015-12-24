@@ -8,7 +8,6 @@ import javax.persistence.*;
 public class Account {
     @Id @GeneratedValue
     private Long id;
-    @Column
     private volatile double balance;
     @JsonIgnore
     @ManyToOne
@@ -27,8 +26,12 @@ public class Account {
         return balance;
     }
 
-    public void setBalance(double balance) {
-        this.balance = balance;
+    public void addMoney(double balance) {
+        this.balance += balance;
+    }
+
+    public void removeMoney(double balance) {
+        this.balance -= balance;
     }
 
     public Client getOwner() {
@@ -37,6 +40,22 @@ public class Account {
 
     public void setOwner(Client owner) {
         this.owner = owner;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Account account = (Account) o;
+
+        return id.equals(account.id);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
     }
 
     @Override

@@ -8,9 +8,7 @@ import java.util.Set;
 public class Client {
     @Id @GeneratedValue
     private Long id;
-    @Column
     private String firstname;
-    @Column
     private String lastname;
     @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
     private List<Account> accounts;
@@ -53,6 +51,22 @@ public class Client {
 
     public void setAccounts(List<Account> accounts) {
         this.accounts = accounts;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Client client = (Client) o;
+
+        return id.equals(client.id);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
     }
 
     @Override

@@ -9,7 +9,8 @@ import java.util.List;
  */
 public interface ClientDao {
     Client create(Client client);
-    Client getById(Long id);
-    Client getByFullname(String firstname, String lastname);
-    List<Client> getAll();
+    Client findById(Long id);
+    Client findByFullname(String firstname, String lastname);
+    List<Client> findAll();
+    Client update(Client client);
 }

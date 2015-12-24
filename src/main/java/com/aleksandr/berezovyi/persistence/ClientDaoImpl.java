@@ -24,23 +24,28 @@ public class ClientDaoImpl implements ClientDao {
     }
 
     @Override
-    public Client getById(Long id) {
+    public Client findById(Long id) {
         return null;
     }
 
     @Override
-    public Client getByFullname(String firstname, String lastname) {
+    public Client findByFullname(String firstname, String lastname) {
         try {
             return (Client) em.createQuery("SELECT c from Client c where firstname=:firstname and lastname=:lastname")
                     .setParameter("firstname", firstname).setParameter("lastname", lastname).getSingleResult();
         } catch (Exception e) {
-            return null; //No entity, null returned
+            return null; //No entity found, null returned
         }
     }
 
     @Override
-    public List<Client> getAll() {
-        Query query = em.createQuery("SELECT c from Client c order by id asc ");
+    public List<Client> findAll() {
+        Query query = em.createQuery("SELECT c from Client c order by c.id asc ");
         return query.getResultList();
+    }
+
+    @Override
+    public Client update(Client client) {
+        return em.merge(client);
     }
 }
