@@ -47,8 +47,12 @@ public class ClientController {
             stringBuilder.append("<td style=\"padding: 15px;\">").append(client.getId()).append("</td>");
             stringBuilder.append("<td style=\"padding: 15px;\">").append(client.getFirstname()).append("</td>");
             stringBuilder.append("<td style=\"padding: 15px;\">").append(client.getLastname()).append("</td>");
-            if (client.getAccounts().size() != 0)
-                stringBuilder.append("<td style=\"padding: 15px;\">").append(client.getAccounts().iterator().next().getBalance()).append("</td>");
+            if (client.getAccounts().size() != 0) {
+                Double balance = 0.0;
+                for (Account account : client.getAccounts())
+                    balance += account.getBalance();
+                stringBuilder.append("<td style=\"padding: 15px;\">").append(balance).append("</td>");
+            }
             stringBuilder.append("</tr>");
         }
         stringBuilder.append("</table>");
