@@ -9,86 +9,106 @@
 </head>
 
 <body>
-<div style="width: 100%;
-  text-align: center;">
-    <div id="clients_table" style="display: inline-block;"></div>
+<div style="width: 100%;">
+    <div style="display: inline-block;">
+        <table border="1" id="clients_table"></table>
+    </div>
+
+    <div style="display: inline-block; margin-left: 10%; max-width: 50%;">
+        <div id="result_table" style="display: inline-block;"></div>
+    </div>
 </div>
 <br>
-<div class="box">
-    Create new client
-    <form id="form">
-        Firstname:<br>
-        <input type="text" name="firstname">
+<div>
+    <div class="box">
+        Create new client
+        <form id="create_client">
+            Firstname:<br>
+            <input type="text">
+            <br>
+            Lastname:<br>
+            <input type="text">
+            <br>
+            <br>
+            <input type="button" name="submit" value="Create" onclick="create_client()">
+        </form>
+    </div>
+    <div class="box">
+        Create new account for client
+        <form id="create_account">
+            Firstname:<br>
+            <input type="text"><br>
+            Lastname:<br>
+            <input type="text">
+            <br>
+            <br>
+            <input type="button" name="submit" value="Create" onclick="create_account()">
+        </form>
+    </div>
+    <div class="box" hidden>
+        Find client accounts
+        <form id="show_client_accounts">
+            Firstname: <br>
+            <input type="text"> <br>
+            Lastname: <br>
+            <input type="text">
+            <br>
+            <br>
+            <input type="button" name="submit" value="Find" onclick="show_client_accounts()">
+        </form>
+    </div>
+    <div class="box">
+        Find clients with max balance <br>
+        <input id="max" type="button" name="submit" value="Find" onclick="find_clients_with_max_balance()">
         <br>
-        Lastname:<br>
-        <input type="text" name="lastname">
+        <br>
+        Find clients with min balance <br>
+        <input id="min" type="button" name="submit" value="Find" onclick="find_clients_with_min_balance()">
         <br>
         <br>
-        <input id="submit" type="button" name="submit" value="Create" onclick="submitform()">
-    </form>
+        <!--Show all accounts<br>-->
+        <!--<input id="all" type="button" name="submit" value="Show" onclick="show_all_accounts()">-->
+    </div>
 </div>
-<div class="box">
-    Find a client
-    <form>
-        Firstname:
-        <input type="text" name="firstname">
-        Lastname:
-        <input type="text" name="lastname">
-        <br>
-        <br>
-        <input id="find" type="button" name="submit" value="Find" onclick="">
-    </form>
-</div>
-<div class="box">
-    Find clients with max balance
-    <input id="max" type="button" name="submit" value="Find" onclick="">
-    <br>
-    <br>
-    Find clients with min balance
-    <input id="min" type="button" name="submit" value="Find" onclick="">
-    <br>
-    <br>
-    Show all clients
-    <br>
-    <input id="all" type="button" name="submit" value="Show" onclick="">
-</div>
-<div class="box">
-    Transfer money
-    <form>
-        Sender:
-        <input type="text" name="lastname">
-        Amount:
-        <input type="number" name="amount">
-        Recipient:
-        <input type="text" name="lastname">
-        <br>
-        <br>
-        <input id="send" type="button" name="submit" value="Send" onclick="">
-    </form>
-</div>
-<div class="box">
-    Deposit money
-    <form>
-        Lastname:
-        <input type="text" name="lastname">
-        Amount:
-        <input type="number" name="amount">
-        <br>
-        <br>
-        <input id="deposite" type="button" name="submit" value="Deposite" onclick="">
-    </form>
-</div>
-<div class="box">
-    Withdraw money
-    <form>
-        Lastname:
-        <input type="text" name="lastname">
-        Amount:
-        <input type="number" name="amount">
-        <br>
-        <br>
-        <input id="withdraw" type="button" name="submit" value="Withdraw" onclick="">
-    </form>
+<div>
+    <div class="box">
+        Transfer money
+        <form id="payment">
+            Sender AccountID <br>
+            <input type="number"> <br>
+            Amount: <br>
+            <input type="number"> <br>
+            Recipient AccountID: <br>
+            <input type="number">
+            <br>
+            <br>
+            <input type="button" name="submit" value="Send" onclick="payment()">
+        </form>
+    </div>
+    <div class="box">
+        Deposit money
+        <form id="deposit">
+            AccountID: <br>
+            <input type="number"> <br>
+            Amount: <br>
+            <input type="number">
+            <br>
+            <br>
+            <input type="button" name="submit" value="Deposit" onclick="deposit()">
+        </form>
+    </div>
+    <div class="box">
+        Withdraw money
+        <form id="withdraw">
+            AccountId: <br>
+            <input type="number"> <br>
+            Amount: <br>
+            <input type="number">
+            <br>
+            <br>
+            <input type="button" name="submit" value="Withdraw" onclick="withdraw()">
+        </form>
+    </div>
 </div>
 </body>
 </html>

@@ -3,10 +3,7 @@ package com.aleksandr.berezovyi.mvc;
 import com.aleksandr.berezovyi.model.Account;
 import com.aleksandr.berezovyi.model.Client;
 import com.aleksandr.berezovyi.model.Payment;
-import com.aleksandr.berezovyi.mvc.exception.AccountDoesNotExistException;
-import com.aleksandr.berezovyi.mvc.exception.ClientDoesNotExistException;
-import com.aleksandr.berezovyi.mvc.exception.ClientExistException;
-import com.aleksandr.berezovyi.service.AccountService;
+import com.aleksandr.berezovyi.mvc.exception.*;
 import com.aleksandr.berezovyi.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,7 +26,7 @@ public class ClientController {
     private ClientService clientService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<String> showClients(@RequestParam(required = false) String firstname, @RequestParam(required = false) String lastname) {
+    public ResponseEntity<List<Client>> showClients(@RequestParam(required = false) String firstname, @RequestParam(required = false) String lastname) {
         List<Client> clients;
         if (lastname != null && firstname != null) {
             Client client = clientService.getClientByFullname(firstname, lastname);
@@ -40,27 +37,13 @@ public class ClientController {
         } else {
             clients = clientService.getAllClients();
         }
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("<table border=\"1\" style=\"border: 1px solid black;border-collapse: collapse;\">");
-        for (Client client : clients) {
-            stringBuilder.append("<tr>");
-            stringBuilder.append("<td style=\"padding: 15px;\">").append(client.getId()).append("</td>");
-            stringBuilder.append("<td style=\"padding: 15px;\">").append(client.getFirstname()).append("</td>");
-            stringBuilder.append("<td style=\"padding: 15px;\">").append(client.getLastname()).append("</td>");
-            if (client.getAccounts().size() != 0) {
-                Double balance = 0.0;
-                for (Account account : client.getAccounts())
-                    balance += account.getBalance();
-                stringBuilder.append("<td style=\"padding: 15px;\">").append(balance).append("</td>");
-            }
-            stringBuilder.append("</tr>");
-        }
-        stringBuilder.append("</table>");
-        return new ResponseEntity<>(stringBuilder.toString(), HttpStatus.OK);
+        return new ResponseEntity<>(clients, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Client> createNewClient(@RequestBody Client sentClient) {
+        if (sentClient.getFirstname().equals("") || sentClient.getLastname().equals(""))
+            throw new WrongClientNameException();
         Client client = clientService.getClientByFullname(sentClient.getFirstname(), sentClient.getLastname());
         if (client == null) {
             client = clientService.createClient(sentClient);
@@ -88,48 +71,53 @@ public class ClientController {
             accounts = client.getAccounts();
         } else {
             accounts = clientService.getAllAccounts();
+            for (Account account : accounts)
+                account.getOwner().setAccounts(null);
         }
-        return new ResponseEntity<>(accounts, HttpStatus.FOUND);
+        return new ResponseEntity<>(accounts, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/max", method = RequestMethod.GET)
     public ResponseEntity<List<Client>> findClientWithMaxBalance() {
-        List<Client> clients = clientService.getClientWithMaxBalance();
-        return new ResponseEntity<>(clients, HttpStatus.FOUND);
+        List<Client> clients = clientService.getAllClients();
+        List<Client> result = clientService.getClientWithMaxBalance(clients);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/min", method = RequestMethod.GET)
     public ResponseEntity<List<Client>> findClientWithMinBalance() {
-        List<Client> clients = clientService.getClientWithMinBalance();
-        return new ResponseEntity<>(clients, HttpStatus.FOUND);
+        List<Client> clients = clientService.getAllClients();
+        List<Client> result = clientService.getClientWithMinBalance(clients);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     //must be https
-    @RequestMapping(value = "/deposit", method = RequestMethod.POST)
-    public ResponseEntity<Account> deposit(@RequestBody Client sentClient, @RequestParam Long accountId, @RequestParam Double amount) {
-        Client client = clientService.getClientByFullname(sentClient.getFirstname(), sentClient.getLastname());
+    @RequestMapping(value = "/deposit", method = RequestMethod.GET)
+    public ResponseEntity<Account> deposit(@RequestParam Long accountId, @RequestParam Double amount) {
+        if (amount <= 0)
+            throw new WrongAmountException();
+        Client client = clientService.getClientByAccountId(accountId);
         if (client == null)
-            throw new ClientDoesNotExistException();
-        Account account = clientService.deposit(client, accountId, amount);
-        if (account == null)
             throw new AccountDoesNotExistException();
+        Account account = clientService.deposit(client, accountId, amount);
         return new ResponseEntity<>(account, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/withdraw", method = RequestMethod.POST)
-    public ResponseEntity<Account> withdraw(@RequestBody Client sentClient, @RequestParam Long accountId, @RequestParam Double amount) {
-        Client client = clientService.getClientByFullname(sentClient.getFirstname(), sentClient.getLastname());
+    @RequestMapping(value = "/withdraw", method = RequestMethod.GET)
+    public ResponseEntity<Account> withdraw(@RequestParam Long accountId, @RequestParam Double amount) {
+        if (amount <= 0)
+            throw new WrongAmountException();
+        Client client = clientService.getClientByAccountId(accountId);
         if (client == null)
-            throw new ClientDoesNotExistException();
-        Account account = clientService.withdraw(client, accountId, amount);
-        if (account == null)
             throw new AccountDoesNotExistException();
+        Account account = clientService.withdraw(client, accountId, amount);
         return new ResponseEntity<>(account, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/payment", method = RequestMethod.POST)
     public ResponseEntity<Payment> createPayment(@RequestBody Payment sentPayment) {
-        System.out.println(sentPayment);
+        if (sentPayment.getAmount() <= 0)
+            throw new WrongAmountException();
         if (sentPayment.getRecipientAccountId() == null || sentPayment.getSenderAccountId() == null)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         Payment payment = clientService.createPayment(sentPayment);

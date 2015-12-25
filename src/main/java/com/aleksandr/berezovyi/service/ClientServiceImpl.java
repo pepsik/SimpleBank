@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,8 +54,11 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public List<Account> getClientBalance(Long id) {
-        return clientDao.findById(id).getAccounts();
+    public Client getClientByAccountId(Long id) {
+        if (accountService.getAccountById(id) == null)
+            return null;
+        else
+            return accountService.getAccountById(id).getOwner();
     }
 
     @Override
@@ -68,13 +72,51 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public List<Client> getClientWithMaxBalance() {
-        return accountService.getAccountWithMaxBalance().stream().map(Account::getOwner).collect(Collectors.toList());
+    public List<Client> getClientWithMaxBalance(List<Client> clients) {
+        Double max = 0.0;
+        List<Client> result = new ArrayList<>();
+        for (Client client : clients) {
+            Double clientBalance = 0.0;
+            for (Account account : client.getAccounts()) {
+                clientBalance += account.getBalance();
+            }
+            int compare = Double.compare(clientBalance, max);
+            if (compare == 0) {
+                result.add(client);
+                continue;
+            }
+            if (compare > 0) {
+                result.clear();
+                result.add(client);
+                max = clientBalance;
+            }
+        }
+        return result;
     }
 
     @Override
-    public List<Client> getClientWithMinBalance() {
-        return accountService.getAccountWithMinBalance().stream().map(Account::getOwner).collect(Collectors.toList());
+    public List<Client> getClientWithMinBalance(List<Client> clients) {
+        Double min = 2_000_000.0; //crutch
+        List<Client> result = new ArrayList<>();
+        for (Client client : clients) {
+            if (client.getAccounts().isEmpty())
+                continue;
+            Double clientBalance = 0.0;
+            for (Account account : client.getAccounts()) {
+                clientBalance += account.getBalance();
+            }
+            int compare = Double.compare(clientBalance, min);
+            if (compare == 0) {
+                result.add(client);
+                continue;
+            }
+            if (compare < 0) {
+                result.clear();
+                result.add(client);
+                min = clientBalance;
+            }
+        }
+        return result;
     }
 
     @Override

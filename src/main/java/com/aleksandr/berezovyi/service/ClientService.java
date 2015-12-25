@@ -17,15 +17,15 @@ public interface ClientService {
 
     Payment createPayment(Payment payment);
 
-    List<Account> getClientBalance(Long id);
+    Client getClientByAccountId(Long id);
 
     List<Account> getAllAccounts();
 
     Client getClientByFullname(String firstname, String lastname);
 
-    List<Client> getClientWithMaxBalance();
+    List<Client> getClientWithMaxBalance(List<Client> clients);
 
-    List<Client> getClientWithMinBalance();
+    List<Client> getClientWithMinBalance(List<Client> clients);
 
     List<Client> getAllClients();
 

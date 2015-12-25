@@ -1,17 +1,18 @@
 package com.aleksandr.berezovyi.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.*;
 
 import javax.persistence.*;
 
 @Entity
+//@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@owner")
 public class Account {
     @Id @GeneratedValue
     private Long id;
     private volatile double balance;
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "ownerid")
+    @JsonBackReference
     private Client owner;
 
     public Long getId() {

@@ -1,16 +1,22 @@
 package com.aleksandr.berezovyi.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Set;
 
 @Entity
+//@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@accounts")
 public class Client {
     @Id @GeneratedValue
     private Long id;
     private String firstname;
     private String lastname;
     @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
+    @JsonManagedReference
     private List<Account> accounts;
 
     public Client() {
